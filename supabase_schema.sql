@@ -1,6 +1,6 @@
 -- Create a table for public profiles
 create table if not exists profiles (
-  id uuid references auth.users not null primary key,
+  id uuid references auth.users on delete cascade not null primary key,
   updated_at timestamp with time zone,
   username text unique,
   full_name text,
@@ -47,7 +47,7 @@ create trigger on_auth_user_created
 -- Create a table for storing history
 create table if not exists history (
   id uuid default gen_random_uuid() primary key,
-  user_id uuid references auth.users not null,
+  user_id uuid references auth.users on delete cascade not null,
   image_data text not null, -- Storing base64 image data
   description text,
   analysis_result jsonb not null,

@@ -12,6 +12,7 @@ interface AuthContextType {
     verifyOtp: (email: string, token: string, type: 'signup' | 'recovery') => Promise<void>;
     resetPassword: (email: string) => Promise<void>;
     updatePassword: (password: string) => Promise<void>;
+    sendOtp: (email: string) => Promise<void>;
     signOut: () => Promise<void>;
 }
 
@@ -124,6 +125,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     };
 
+    const sendOtp = async (email: string) => {
+        try {
+            const { error } = await supabase.auth.signInWithOtp({
+                email,
+                options: { shouldCreateUser: false }
+            });
+            if (error) throw error;
+            alert("Check your email for the OTP code!");
+        } catch (error: any) {
+            console.error("Error sending OTP:", error);
+            alert(error.message || "Error sending OTP");
+            throw error;
+        }
+    };
+
     const signOut = async () => {
         try {
             const { error } = await supabase.auth.signOut();
@@ -134,7 +150,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     return (
-        <AuthContext.Provider value={{ session, user, loading, signInWithGoogle, signInWithEmail, signUpWithEmail, verifyOtp, resetPassword, updatePassword, signOut }}>
+        <AuthContext.Provider value={{ session, user, loading, signInWithGoogle, signInWithEmail, signUpWithEmail, verifyOtp, resetPassword, updatePassword, sendOtp, signOut }}>
             {!loading && children}
         </AuthContext.Provider>
     );
