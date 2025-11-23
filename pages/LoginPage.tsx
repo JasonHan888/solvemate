@@ -15,11 +15,16 @@ export const LoginPage = () => {
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
 
+  // Only redirect if user is already logged in ON MOUNT.
+  // We handle post-login redirects manually to support different flows (like recovery).
   React.useEffect(() => {
     if (user) {
+      // Check if we are already on the login page but logged in (e.g. from a refresh)
+      // But we don't want to redirect if we are in the middle of a flow.
+      // Simplest: If user exists on mount, go to app.
       navigate('/app');
     }
-  }, [user, navigate]);
+  }, []); // Empty dependency array = run only on mount
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,14 +32,19 @@ export const LoginPage = () => {
     try {
       if (showOtp) {
         await verifyOtp(email, otp, otpType);
-        // After verifying, if it was recovery, we might want to redirect to profile to change password
-        // But for now, verifyOtp usually logs the user in.
+        if (otpType === 'recovery') {
+          alert("Verification successful! Please set your new password.");
+          navigate('/profile');
+        } else {
+          navigate('/app');
+        }
       } else if (isSignUp) {
         await signUpWithEmail(email, password);
         setShowOtp(true);
         setOtpType('signup');
       } else {
         await signInWithEmail(email, password);
+        navigate('/app');
       }
     } catch (error) {
       // Error handled in context
