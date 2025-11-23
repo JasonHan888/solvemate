@@ -192,6 +192,15 @@ export const LoginPage = () => {
                 {isSignUp ? 'Sign In' : 'Sign Up'}
               </button>
             </div>
+
+            <div className="mt-4 text-center text-sm">
+              <button
+                onClick={() => { setShowOtp(true); setOtpType('signup'); }}
+                className="text-slate-400 hover:text-slate-600 text-xs"
+              >
+                I already have a verification code
+              </button>
+            </div>
           </>
         )}
 
