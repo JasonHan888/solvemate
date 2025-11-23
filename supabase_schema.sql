@@ -13,14 +13,17 @@ create table if not exists profiles (
 -- Set up Row Level Security (RLS) for profiles
 alter table profiles enable row level security;
 
+drop policy if exists "Public profiles are viewable by everyone." on profiles;
 create policy "Public profiles are viewable by everyone."
   on profiles for select
   using ( true );
 
+drop policy if exists "Users can insert their own profile." on profiles;
 create policy "Users can insert their own profile."
   on profiles for insert
   with check ( auth.uid() = id );
 
+drop policy if exists "Users can update own profile." on profiles;
 create policy "Users can update own profile."
   on profiles for update
   using ( auth.uid() = id );
@@ -54,10 +57,12 @@ create table if not exists history (
 -- Set up Row Level Security (RLS) for history
 alter table history enable row level security;
 
+drop policy if exists "Users can create their own history items." on history;
 create policy "Users can create their own history items."
   on history for insert
   with check ( auth.uid() = user_id );
 
+drop policy if exists "Users can view their own history items." on history;
 create policy "Users can view their own history items."
   on history for select
   using ( auth.uid() = user_id );
