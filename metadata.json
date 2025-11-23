@@ -1,0 +1,8 @@
+{
+  "name": "SolveMate",
+  "description": "Upload a picture and describe your problem — AI finds the solution instantly.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
