@@ -2,12 +2,22 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Monitor, Home, BookOpen, Cpu, ArrowRight } from 'lucide-react';
 
+import { useApp } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
+
 export const LandingPage = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  React.useEffect(() => {
+    if (user) {
+      navigate('/app');
+    }
+  }, [user, navigate]);
 
   return (
     <div className="flex-grow flex flex-col items-center w-full bg-slate-50">
-      
+
       {/* Hero Section */}
       <div className="w-full max-w-4xl mx-auto px-6 py-16 md:py-24 text-center">
         <div className="animate-slide-up">
@@ -15,28 +25,28 @@ export const LandingPage = () => {
             Solve Problems in a <span className="text-blue-600 relative">
               Snap
               <svg className="absolute w-full h-3 -bottom-1 left-0 text-blue-200 -z-10" viewBox="0 0 100 10" preserveAspectRatio="none">
-                 <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="8" fill="none" />
+                <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="8" fill="none" />
               </svg>
             </span>.
           </h1>
           <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mb-10 leading-relaxed">
-            Upload a photo of your technical issue, broken item, or homework question. 
+            Upload a photo of your technical issue or broken item.
             Our AI diagnostics will guide you to a solution instantly.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button
-                onClick={() => navigate('/explanation')}
-                className="px-8 py-4 rounded-xl bg-blue-600 text-white font-bold text-lg hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-600/20 transition-all transform active:scale-[0.98] flex items-center justify-center gap-2"
-              >
-                Get Started <ArrowRight size={20} />
-              </button>
-              <button
-                onClick={() => navigate('/login')}
-                className="px-8 py-4 rounded-xl bg-white text-slate-700 font-bold text-lg border border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all"
-              >
-                Log In
-              </button>
+            <button
+              onClick={() => navigate('/explanation')}
+              className="px-8 py-4 rounded-xl bg-blue-600 text-white font-bold text-lg hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-600/20 transition-all transform active:scale-[0.98] flex items-center justify-center gap-2"
+            >
+              Get Started <ArrowRight size={20} />
+            </button>
+            <button
+              onClick={() => navigate('/login')}
+              className="px-8 py-4 rounded-xl bg-white text-slate-700 font-bold text-lg border border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all"
+            >
+              Log In
+            </button>
           </div>
         </div>
       </div>
@@ -46,10 +56,9 @@ export const LandingPage = () => {
         <h3 className="text-center text-sm font-semibold text-slate-400 uppercase tracking-wider mb-8">
           Works for everything
         </h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <FeatureCard icon={<Monitor />} title="Tech Issues" desc="Hardware & Software" />
           <FeatureCard icon={<Home />} title="Home Repair" desc="Appliances & Fixtures" />
-          <FeatureCard icon={<BookOpen />} title="Study Help" desc="Math & Science" />
           <FeatureCard icon={<Cpu />} title="Gadgets" desc="Phones & Electronics" />
         </div>
       </div>

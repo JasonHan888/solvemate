@@ -1,17 +1,45 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, ShieldCheck, LogIn } from 'lucide-react';
+import { ArrowRight, ShieldCheck, LogIn, Mail, Lock } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export const LoginPage = () => {
   const navigate = useNavigate();
-  const { signInWithGoogle, user } = useAuth();
+  const { signInWithGoogle, signInWithEmail, signUpWithEmail, resetPassword, user } = useAuth();
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
   React.useEffect(() => {
     if (user) {
       navigate('/app');
     }
   }, [user, navigate]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      if (isSignUp) {
+        await signUpWithEmail(email, password);
+      } else {
+        await signInWithEmail(email, password);
+      }
+    } catch (error) {
+      // Error handled in context
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      alert("Please enter your email address first.");
+      return;
+    }
+    await resetPassword(email);
+  };
 
   const handleGuest = () => {
     navigate('/app');
@@ -20,18 +48,59 @@ export const LoginPage = () => {
   return (
     <div className="flex-grow flex flex-col items-center justify-center w-full bg-slate-50 px-4 py-12">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl shadow-slate-200/60 p-8 border border-slate-100 animate-scale-in">
-        <h2 className="text-2xl font-bold text-slate-800 mb-2 text-center">Welcome Back</h2>
-        <p className="text-slate-500 text-center mb-8">Sign in to save your history and preferences.</p>
+        <h2 className="text-2xl font-bold text-slate-800 mb-2 text-center">
+          {isSignUp ? 'Create Account' : 'Welcome Back'}
+        </h2>
+        <p className="text-slate-500 text-center mb-8">
+          {isSignUp ? 'Sign up to start saving your history.' : 'Sign in to save your history and preferences.'}
+        </p>
 
-        <div className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 mb-6">
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-3 text-slate-400" size={20} />
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none"
+                placeholder="you@example.com"
+                required
+              />
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Password</label>
+            <div className="relative">
+              <Lock className="absolute left-3 top-3 text-slate-400" size={20} />
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none"
+                placeholder="••••••••"
+                required
+              />
+            </div>
+          </div>
+
+          {!isSignUp && (
+            <div className="flex justify-end">
+              <button type="button" onClick={handleForgotPassword} className="text-sm text-blue-600 hover:underline">
+                Forgot Password?
+              </button>
+            </div>
+          )}
+
           <button
-            onClick={signInWithGoogle}
-            className="w-full py-3 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-600/20 transition-all transform active:scale-[0.98] flex items-center justify-center gap-2"
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700 transition-all disabled:opacity-50"
           >
-            <LogIn size={20} />
-            Sign in with Google
+            {loading ? 'Processing...' : (isSignUp ? 'Sign Up' : 'Sign In')}
           </button>
-        </div>
+        </form>
 
         <div className="relative my-6">
           <div className="absolute inset-0 flex items-center">
@@ -42,12 +111,36 @@ export const LoginPage = () => {
           </div>
         </div>
 
-        <button
-          onClick={handleGuest}
-          className="w-full py-3 rounded-lg bg-slate-100 text-slate-700 font-bold hover:bg-slate-200 transition-all flex items-center justify-center gap-2"
-        >
-          Continue as Guest <ArrowRight size={18} />
-        </button>
+        <div className="space-y-4">
+          <button
+            onClick={signInWithGoogle}
+            className="w-full py-3 rounded-lg bg-white border border-slate-200 text-slate-700 font-medium hover:bg-slate-50 transition-all flex items-center justify-center gap-2"
+          >
+            <LogIn size={20} />
+            Sign in with Google
+          </button>
+        </div>
+
+        <div className="mt-6 text-center text-sm">
+          <span className="text-slate-500">
+            {isSignUp ? 'Already have an account?' : "Don't have an account?"}
+          </span>
+          <button
+            onClick={() => setIsSignUp(!isSignUp)}
+            className="ml-2 text-blue-600 font-semibold hover:underline"
+          >
+            {isSignUp ? 'Sign In' : 'Sign Up'}
+          </button>
+        </div>
+
+        <div className="mt-6 border-t border-slate-100 pt-6">
+          <button
+            onClick={handleGuest}
+            className="w-full py-3 rounded-lg bg-slate-100 text-slate-700 font-bold hover:bg-slate-200 transition-all flex items-center justify-center gap-2"
+          >
+            Continue as Guest <ArrowRight size={18} />
+          </button>
+        </div>
 
         <div className="mt-6 flex items-center justify-center gap-2 text-xs text-slate-400">
           <ShieldCheck size={14} />
