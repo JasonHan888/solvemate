@@ -61,8 +61,7 @@ export const LoginPage = () => {
     setLoading(true);
     try {
       await resetPassword(email);
-      setShowOtp(true);
-      setOtpType('recovery');
+      navigate(`/reset-password?email=${encodeURIComponent(email)}`);
     } catch (error) {
       // Error handled in context
     } finally {

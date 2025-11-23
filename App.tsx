@@ -10,6 +10,7 @@ import { SolverPage } from './pages/SolverPage';
 import { ResultPage } from './pages/ResultPage';
 import { HistoryPage } from './pages/HistoryPage';
 import { ProfilePage } from './pages/ProfilePage';
+import { ResetPasswordPage } from './pages/ResetPasswordPage';
 
 // Protected Route Component
 const ProtectedHistoryRoute = ({ children }: React.PropsWithChildren) => {
@@ -44,6 +45,7 @@ function AppRoutes() {
           </ProtectedHistoryRoute>
         }
       />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
     </Routes>
   );
 }

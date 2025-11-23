@@ -61,3 +61,11 @@ create policy "Users can create their own history items."
 create policy "Users can view their own history items."
   on history for select
   using ( auth.uid() = user_id );
+
+-- Function to allow users to delete their own account
+create or replace function delete_user()
+returns void as $$
+begin
+  delete from auth.users where id = auth.uid();
+end;
+$$ language plpgsql security definer;

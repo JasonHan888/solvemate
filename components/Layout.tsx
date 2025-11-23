@@ -12,7 +12,7 @@ export const Layout: React.FC<PropsWithChildren> = ({ children }) => {
 
   const handleLogout = () => {
     signOut();
-    navigate('/');
+    navigate('/login');
   };
 
   return (
