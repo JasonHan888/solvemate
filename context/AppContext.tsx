@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, PropsWithChildre
 import { AnalysisResult, HistoryItem } from '../types';
 import { useAuth } from './AuthContext';
 import { historyService } from '../services/historyService';
+import { supabase } from '../services/supabaseClient';
 
 interface UserProfile {
   username?: string;
@@ -17,7 +18,6 @@ interface AppContextType {
   user: any | null;
   profile: UserProfile | null;
   refreshProfile: () => Promise<void>;
-}
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
