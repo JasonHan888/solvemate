@@ -12,12 +12,20 @@ import { HistoryPage } from './pages/HistoryPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { ResetPasswordPage } from './pages/ResetPasswordPage';
 
+import { useAuth } from './context/AuthContext';
+
 // Protected Route Component
-const ProtectedHistoryRoute = ({ children }: React.PropsWithChildren) => {
-  const { user } = useApp();
-  if (!user) {
-    return <Navigate to="/" replace />;
+const ProtectedRoute = ({ children }: React.PropsWithChildren) => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   }
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
   return <>{children}</>;
 };
 
@@ -27,22 +35,36 @@ function AppRoutes() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/explanation" element={<ExplanationPage />} />
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/app" element={<SolverPage />} />
-      <Route path="/result" element={<ResultPage />} />
+      <Route
+        path="/app"
+        element={
+          <ProtectedRoute>
+            <SolverPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/result"
+        element={
+          <ProtectedRoute>
+            <ResultPage />
+          </ProtectedRoute>
+        }
+      />
       <Route
         path="/history"
         element={
-          <ProtectedHistoryRoute>
+          <ProtectedRoute>
             <HistoryPage />
-          </ProtectedHistoryRoute>
+          </ProtectedRoute>
         }
       />
       <Route
         path="/profile"
         element={
-          <ProtectedHistoryRoute>
+          <ProtectedRoute>
             <ProfilePage />
-          </ProtectedHistoryRoute>
+          </ProtectedRoute>
         }
       />
       <Route path="/reset-password" element={<ResetPasswordPage />} />
