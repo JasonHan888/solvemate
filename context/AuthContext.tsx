@@ -9,7 +9,9 @@ interface AuthContextType {
     signInWithGoogle: () => Promise<void>;
     signInWithEmail: (email: string, password: string) => Promise<void>;
     signUpWithEmail: (email: string, password: string) => Promise<void>;
+    verifyOtp: (email: string, token: string, type: 'signup' | 'recovery') => Promise<void>;
     resetPassword: (email: string) => Promise<void>;
+    updatePassword: (password: string) => Promise<void>;
     signOut: () => Promise<void>;
 }
 
@@ -72,12 +74,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             const { error } = await supabase.auth.signUp({
                 email,
                 password,
-                options: {
-                    emailRedirectTo: `${window.location.origin}/#/app`,
-                },
+                // options: { emailRedirectTo: ... } // Not needed for OTP
             });
             if (error) throw error;
-            alert("Check your email for the confirmation link!");
+            alert("Check your email for the OTP code!");
         } catch (error: any) {
             console.error("Error signing up:", error);
             alert(error.message || "Error signing up");
@@ -85,16 +85,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     };
 
-    const resetPassword = async (email: string) => {
+    const verifyOtp = async (email: string, token: string, type: 'signup' | 'recovery') => {
         try {
-            const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: `${window.location.origin}/#/reset-password`,
+            const { error } = await supabase.auth.verifyOtp({
+                email,
+                token,
+                type,
             });
             if (error) throw error;
-            alert("Check your email for the password reset link!");
+        } catch (error: any) {
+            console.error("Error verifying OTP:", error);
+            alert(error.message || "Error verifying OTP");
+            throw error;
+        }
+    };
+
+    const resetPassword = async (email: string) => {
+        try {
+            const { error } = await supabase.auth.resetPasswordForEmail(email);
+            if (error) throw error;
+            alert("Check your email for the OTP code!");
         } catch (error: any) {
             console.error("Error resetting password:", error);
             alert(error.message || "Error resetting password");
+            throw error;
+        }
+    };
+
+    const updatePassword = async (password: string) => {
+        try {
+            const { error } = await supabase.auth.updateUser({ password });
+            if (error) throw error;
+            alert("Password updated successfully!");
+        } catch (error: any) {
+            console.error("Error updating password:", error);
+            alert(error.message || "Error updating password");
             throw error;
         }
     };
@@ -109,7 +134,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     return (
-        <AuthContext.Provider value={{ session, user, loading, signInWithGoogle, signInWithEmail, signUpWithEmail, resetPassword, signOut }}>
+        <AuthContext.Provider value={{ session, user, loading, signInWithGoogle, signInWithEmail, signUpWithEmail, verifyOtp, resetPassword, updatePassword, signOut }}>
             {!loading && children}
         </AuthContext.Provider>
     );

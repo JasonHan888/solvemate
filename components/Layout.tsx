@@ -7,7 +7,7 @@ import { useAuth } from '../context/AuthContext';
 export const Layout: React.FC<PropsWithChildren> = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useApp();
+  const { user, profile } = useApp();
   const { signOut } = useAuth();
 
   const handleLogout = () => {
@@ -50,7 +50,9 @@ export const Layout: React.FC<PropsWithChildren> = ({ children }) => {
                 </Link>
                 <div className="h-6 w-px bg-slate-200 mx-1"></div>
                 <div className="flex items-center gap-3">
-                  <span className="text-sm font-medium text-slate-600 hidden md:block">{user.email}</span>
+                  <Link to="/profile" className="text-sm font-medium text-slate-600 hidden md:block hover:text-blue-600 transition-colors">
+                    {profile?.username || user.email}
+                  </Link>
                   <button
                     onClick={handleLogout}
                     className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"

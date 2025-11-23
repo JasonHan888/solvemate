@@ -9,6 +9,7 @@ import { LoginPage } from './pages/LoginPage';
 import { SolverPage } from './pages/SolverPage';
 import { ResultPage } from './pages/ResultPage';
 import { HistoryPage } from './pages/HistoryPage';
+import { ProfilePage } from './pages/ProfilePage';
 
 // Protected Route Component
 const ProtectedHistoryRoute = ({ children }: React.PropsWithChildren) => {
@@ -32,6 +33,14 @@ function AppRoutes() {
         element={
           <ProtectedHistoryRoute>
             <HistoryPage />
+          </ProtectedHistoryRoute>
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedHistoryRoute>
+            <ProfilePage />
           </ProtectedHistoryRoute>
         }
       />

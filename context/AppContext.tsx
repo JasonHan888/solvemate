@@ -3,8 +3,10 @@ import { AnalysisResult, HistoryItem } from '../types';
 import { useAuth } from './AuthContext';
 import { historyService } from '../services/historyService';
 
-interface User {
-  email: string;
+interface UserProfile {
+  username?: string;
+  full_name?: string;
+  avatar_url?: string;
 }
 
 interface AppContextType {
@@ -12,7 +14,10 @@ interface AppContextType {
   addToHistory: (item: HistoryItem) => void;
   currentAnalysis: HistoryItem | null;
   setCurrentAnalysis: (item: HistoryItem | null) => void;
-  user: any | null; // Using any to match AuthContext user or custom user
+  user: any | null;
+  profile: UserProfile | null;
+  refreshProfile: () => Promise<void>;
+}
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -20,23 +25,41 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export const AppProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [currentAnalysis, setCurrentAnalysis] = useState<HistoryItem | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const { user } = useAuth();
 
-  // Load history from Supabase if logged in, or local storage if not (optional, or just clear)
+  const refreshProfile = async () => {
+    if (!user) {
+      setProfile(null);
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('username, full_name, avatar_url')
+        .eq('id', user.id)
+        .single();
+
+      if (error && error.code !== 'PGRST116') { // Ignore not found error
+        console.error('Error fetching profile:', error);
+      }
+
+      if (data) {
+        setProfile(data);
+      }
+    } catch (error) {
+      console.error('Error in refreshProfile:', error);
+    }
+  };
+
   useEffect(() => {
     if (user) {
       historyService.getHistory(user.id).then(setHistory);
+      refreshProfile();
     } else {
-      // Optional: Load local history for guest, or just empty
-      // setHistory([]); 
-      try {
-        const storedHistory = localStorage.getItem('snapsolve_history');
-        if (storedHistory) {
-          setHistory(JSON.parse(storedHistory));
-        }
-      } catch (e) {
-        console.error("Failed to load local storage data", e);
-      }
+      setHistory([]);
+      setProfile(null);
     }
   }, [user]);
 
@@ -50,19 +73,13 @@ export const AppProvider: React.FC<PropsWithChildren> = ({ children }) => {
         console.error("Failed to save to Supabase history", error);
       }
     } else {
-      // Save locally for guest
-      try {
-        const currentHistory = JSON.parse(localStorage.getItem('snapsolve_history') || '[]');
-        const newHistory = [item, ...currentHistory].slice(0, 10);
-        localStorage.setItem('snapsolve_history', JSON.stringify(newHistory));
-      } catch (e) {
-        console.warn("Storage quota exceeded, could not save to local history");
-      }
+      // No guest mode storage anymore
+      console.warn("User not logged in, cannot save history.");
     }
   };
 
   return (
-    <AppContext.Provider value={{ history, addToHistory, currentAnalysis, setCurrentAnalysis, user }}>
+    <AppContext.Provider value={{ history, addToHistory, currentAnalysis, setCurrentAnalysis, user, profile, refreshProfile }}>
       {children}
     </AppContext.Provider>
   );
