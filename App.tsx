@@ -1,8 +1,9 @@
 import React from 'react';
-import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { AppProvider, useApp } from './context/AppContext';
 import { AuthProvider } from './context/AuthContext';
 import { Layout } from './components/Layout';
+import { SidebarLayout } from './components/SidebarLayout';
 import { LandingPage } from './pages/LandingPage';
 import { ExplanationPage } from './pages/ExplanationPage';
 import { LoginPage } from './pages/LoginPage';
@@ -32,42 +33,21 @@ const ProtectedRoute = ({ children }: React.PropsWithChildren) => {
 function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/explanation" element={<ExplanationPage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route
-        path="/app"
-        element={
-          <ProtectedRoute>
-            <SolverPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/result"
-        element={
-          <ProtectedRoute>
-            <ResultPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/history"
-        element={
-          <ProtectedRoute>
-            <HistoryPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/profile"
-        element={
-          <ProtectedRoute>
-            <ProfilePage />
-          </ProtectedRoute>
-        }
-      />
-      <Route path="/reset-password" element={<ResetPasswordPage />} />
+      {/* Public Routes with Standard Layout */}
+      <Route element={<Layout><Outlet /></Layout>}>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/explanation" element={<ExplanationPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
+      </Route>
+
+      {/* Protected Routes with Sidebar Layout */}
+      <Route element={<ProtectedRoute><SidebarLayout><Outlet /></SidebarLayout></ProtectedRoute>}>
+        <Route path="/app" element={<SolverPage />} />
+        <Route path="/result" element={<ResultPage />} />
+        <Route path="/history" element={<HistoryPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+      </Route>
     </Routes>
   );
 }
@@ -77,9 +57,7 @@ function App() {
     <AuthProvider>
       <AppProvider>
         <Router>
-          <Layout>
-            <AppRoutes />
-          </Layout>
+          <AppRoutes />
         </Router>
       </AppProvider>
     </AuthProvider>
