@@ -102,13 +102,13 @@ export const ResultPage = () => {
               <div className="flex flex-col gap-3 mt-6">
                 <button
                   onClick={() => navigate('/app')}
-                  className="w-full py-2.5 px-4 bg-white border-2 border-slate-200 text-slate-600 font-semibold rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-colors flex items-center justify-center gap-2"
+                  className="w-full py-3 px-4 bg-white border-2 border-slate-200 text-slate-600 font-semibold rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-colors flex items-center justify-center gap-2 active:scale-[0.98]"
                 >
                   <RotateCcw size={18} /> Ask Another Question
                 </button>
                 <button
                   onClick={handleDownload}
-                  className="w-full py-2.5 px-4 bg-white border-2 border-slate-200 text-slate-600 font-semibold rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-colors flex items-center justify-center gap-2"
+                  className="w-full py-3 px-4 bg-white border-2 border-slate-200 text-slate-600 font-semibold rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-colors flex items-center justify-center gap-2 active:scale-[0.98]"
                   title="Save analysis result as JSON"
                 >
                   <Download size={18} /> Save Result (JSON)
@@ -126,7 +126,7 @@ export const ResultPage = () => {
           <div className="bg-white rounded-2xl shadow-md border-l-4 border-blue-500 overflow-hidden animate-slide-up delay-100">
             <div className="p-6">
               <div className="flex justify-between items-start mb-2">
-                <h2 className="text-xl font-bold text-slate-800">Problem Summary</h2>
+                <h2 className="text-lg md:text-xl font-bold text-slate-800">Problem Summary</h2>
                 <div className="flex gap-2">
                   <button
                     onClick={toggleSpeech}

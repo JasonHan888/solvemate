@@ -243,7 +243,7 @@ export const SolverPage = () => {
 
       {/* Camera Modal Overlay */}
       {isCameraOpen && (
-        <div className="fixed inset-0 z-[60] bg-black flex flex-col animate-fade-in">
+        <div className="fixed inset-0 z-[60] bg-black flex flex-col animate-fade-in h-[100dvh]">
           <div className="relative flex-grow flex items-center justify-center bg-black overflow-hidden">
             <video
               ref={videoRef}
@@ -272,7 +272,7 @@ export const SolverPage = () => {
             </button>
           </div>
 
-          <div className="bg-black p-6 flex justify-center items-center pb-10">
+          <div className="bg-black p-6 flex justify-center items-center pb-10 safe-area-bottom">
             <button
               onClick={capturePhoto}
               className="w-20 h-20 rounded-full border-4 border-white bg-white/20 flex items-center justify-center hover:bg-white/40 transition-colors active:scale-95"
@@ -291,7 +291,7 @@ export const SolverPage = () => {
 
         <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/60 overflow-hidden border border-slate-100">
 
-          <div className="p-6 md:p-8">
+          <div className="p-5 md:p-8">
             {/* Category Selection */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-slate-700 mb-2">Problem Category</label>
@@ -338,12 +338,12 @@ export const SolverPage = () => {
                 </div>
               ) : (
                 <div className="flex flex-col items-center gap-4">
-                  <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <UploadCloud size={32} />
+                  <div className="w-12 h-12 md:w-16 md:h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <UploadCloud size={24} className="md:w-8 md:h-8" />
                   </div>
                   <div>
-                    <p className="text-lg font-semibold text-slate-700">Click to upload or drag and drop</p>
-                    <p className="text-slate-400 text-sm mt-1">SVG, PNG, JPG or GIF (max. 5MB)</p>
+                    <p className="text-base md:text-lg font-semibold text-slate-700">Click to upload or drag and drop</p>
+                    <p className="text-slate-400 text-xs md:text-sm mt-1">SVG, PNG, JPG or GIF (max. 5MB)</p>
                   </div>
 
                   <div className="relative w-full max-w-xs my-2">
@@ -360,7 +360,7 @@ export const SolverPage = () => {
                       e.stopPropagation();
                       startCamera();
                     }}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-slate-800 text-white rounded-lg hover:bg-slate-900 transition-colors shadow-md hover:shadow-lg"
+                    className="flex items-center gap-2 px-5 py-2.5 bg-slate-800 text-white rounded-lg hover:bg-slate-900 transition-colors shadow-md hover:shadow-lg w-full md:w-auto justify-center"
                   >
                     <Camera size={18} /> Take Photo
                   </button>

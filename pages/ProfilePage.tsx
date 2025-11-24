@@ -111,17 +111,17 @@ export const ProfilePage = () => {
     };
 
     return (
-        <div className="flex-grow w-full bg-slate-50 px-4 py-12">
-            <div className="max-w-2xl mx-auto space-y-8">
-                <h1 className="text-3xl font-bold text-slate-800">Account Settings</h1>
+        <div className="flex-grow w-full bg-slate-50 px-4 py-6 md:py-12">
+            <div className="max-w-2xl mx-auto space-y-6 md:space-y-8">
+                <h1 className="text-2xl md:text-3xl font-bold text-slate-800">Account Settings</h1>
 
                 {/* Profile Section */}
-                <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+                <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="p-3 bg-blue-50 rounded-full text-blue-600">
                             <User size={24} />
                         </div>
-                        <h2 className="text-xl font-semibold text-slate-800">Profile Information</h2>
+                        <h2 className="text-lg md:text-xl font-semibold text-slate-800">Profile Information</h2>
                     </div>
 
                     <form onSubmit={handleUpdateProfile} className="space-y-4">
@@ -140,7 +140,7 @@ export const ProfilePage = () => {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="px-6 py-2 rounded-lg bg-slate-800 text-white font-medium hover:bg-slate-900 transition-all flex items-center gap-2 disabled:opacity-50"
+                                className="w-full md:w-auto px-6 py-2 rounded-lg bg-slate-800 text-white font-medium hover:bg-slate-900 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                             >
                                 <Save size={18} />
                                 Save Profile
@@ -150,16 +150,16 @@ export const ProfilePage = () => {
                 </div>
 
                 {/* Security Section */}
-                <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+                <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="p-3 bg-indigo-50 rounded-full text-indigo-600">
                             <Lock size={24} />
                         </div>
-                        <h2 className="text-xl font-semibold text-slate-800">Security</h2>
+                        <h2 className="text-lg md:text-xl font-semibold text-slate-800">Security</h2>
                     </div>
 
                     <div className="space-y-6">
-                        <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-100">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-100 gap-4">
                             <div>
                                 <h3 className="font-medium text-slate-700">Password</h3>
                                 <p className="text-sm text-slate-500">Change your password via email verification.</p>
@@ -167,7 +167,7 @@ export const ProfilePage = () => {
                             <button
                                 onClick={handleChangePasswordClick}
                                 disabled={loading}
-                                className="px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:text-blue-600 transition-all shadow-sm"
+                                className="w-full md:w-auto px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:text-blue-600 transition-all shadow-sm"
                             >
                                 Change Password
                             </button>
@@ -177,7 +177,7 @@ export const ProfilePage = () => {
                             <h3 className="font-medium text-red-600 mb-2">Danger Zone</h3>
                             <div className="p-4 bg-red-50 rounded-lg border border-red-100">
                                 {!showDeleteOtp ? (
-                                    <div className="flex items-center justify-between">
+                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                                         <div>
                                             <h3 className="font-medium text-red-700">Delete Account</h3>
                                             <p className="text-sm text-red-500">Permanently delete your account and data.</p>
@@ -185,7 +185,7 @@ export const ProfilePage = () => {
                                         <button
                                             onClick={handleDeleteAccountClick}
                                             disabled={loading}
-                                            className="px-4 py-2 rounded-lg bg-white border border-red-200 text-red-600 font-medium hover:bg-red-600 hover:text-white transition-all shadow-sm flex items-center gap-2"
+                                            className="w-full md:w-auto px-4 py-2 rounded-lg bg-white border border-red-200 text-red-600 font-medium hover:bg-red-600 hover:text-white transition-all shadow-sm flex items-center justify-center gap-2"
                                         >
                                             <Trash2 size={16} />
                                             Delete Account
@@ -199,28 +199,30 @@ export const ProfilePage = () => {
                                                 Please enter the verification code sent to <strong>{user?.email}</strong> to confirm account deletion.
                                             </p>
                                         </div>
-                                        <div className="flex gap-2">
+                                        <div className="flex flex-col md:flex-row gap-2">
                                             <input
                                                 type="text"
                                                 value={deleteOtp}
                                                 onChange={(e) => setDeleteOtp(e.target.value)}
-                                                className="flex-grow px-4 py-2 rounded-lg border border-red-200 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none"
+                                                className="w-full md:flex-grow px-4 py-2 rounded-lg border border-red-200 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none"
                                                 placeholder="Enter OTP Code"
                                             />
-                                            <button
-                                                onClick={handleConfirmDelete}
-                                                disabled={loading || !deleteOtp}
-                                                className="px-4 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 transition-all shadow-sm whitespace-nowrap"
-                                            >
-                                                {loading ? 'Deleting...' : 'Confirm Delete'}
-                                            </button>
-                                            <button
-                                                onClick={() => setShowDeleteOtp(false)}
-                                                disabled={loading}
-                                                className="px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-600 font-medium hover:bg-slate-50 transition-all shadow-sm"
-                                            >
-                                                Cancel
-                                            </button>
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={handleConfirmDelete}
+                                                    disabled={loading || !deleteOtp}
+                                                    className="flex-1 md:flex-none px-4 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 transition-all shadow-sm whitespace-nowrap"
+                                                >
+                                                    {loading ? 'Deleting...' : 'Confirm Delete'}
+                                                </button>
+                                                <button
+                                                    onClick={() => setShowDeleteOtp(false)}
+                                                    disabled={loading}
+                                                    className="flex-1 md:flex-none px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-600 font-medium hover:bg-slate-50 transition-all shadow-sm"
+                                                >
+                                                    Cancel
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 )}
