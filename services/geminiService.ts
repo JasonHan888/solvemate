@@ -84,6 +84,7 @@ export const analyzeProblem = async (
         systemInstruction: SYSTEM_INSTRUCTION,
         responseMimeType: "application/json",
         responseSchema: responseSchema,
+        maxOutputTokens: 2000, // Limit output tokens to manage usage
       },
     });
 
@@ -94,8 +95,14 @@ export const analyzeProblem = async (
 
     const result = JSON.parse(text) as AnalysisResult;
     return result;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Gemini Analysis Error:", error);
+
+    // Handle Rate Limits (429)
+    if (error.status === 429 || error.message?.includes('429')) {
+      throw new Error("Daily AI limit reached. Please try again tomorrow.");
+    }
+
     throw error;
   }
 };

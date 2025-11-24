@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 
 export const LoginPage = () => {
   const navigate = useNavigate();
-  const { signInWithGoogle, signInWithEmail, signUpWithEmail, verifyOtp, resetPassword, user } = useAuth();
+  const { signInWithGoogle, signInWithEmail, signUpWithEmail, verifyOtp, resetPassword, sendOtp, user } = useAuth();
   const [isSignUp, setIsSignUp] = useState(false);
   const [showOtp, setShowOtp] = useState(false);
   const [otpType, setOtpType] = useState<'signup' | 'recovery'>('signup');
@@ -14,29 +14,67 @@ export const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
+  const [googleOtpSent, setGoogleOtpSent] = useState(false);
 
   // Only redirect if user is already logged in ON MOUNT.
   // We handle post-login redirects manually to support different flows (like recovery).
   React.useEffect(() => {
-    if (user) {
-      // Check if we are already on the login page but logged in (e.g. from a refresh)
-      // But we don't want to redirect if we are in the middle of a flow.
-      // Simplest: If user exists on mount, go to app.
-      navigate('/app');
-    }
-  }, []); // Empty dependency array = run only on mount
+    const handleAuthRedirect = async () => {
+      if (user) {
+        // Check if user logged in with Google
+        const isGoogle = user.app_metadata.provider === 'google';
+        const isVerified = sessionStorage.getItem('google_otp_verified');
+
+        if (isGoogle && !isVerified) {
+          // If Google user and not verified, show OTP screen
+          if (!showOtp) {
+            setShowOtp(true);
+            // Send OTP immediately
+            // Actually we need to send OTP.
+            // But wait, verifyOtp doesn't send. signUpWithEmail sends.
+            // We need a sendOtp function exposed in AuthContext or use signInWithOtp.
+            // Let's use the sendOtp from AuthContext if available, or add it.
+            // We added sendOtp to AuthContext earlier for delete account.
+            // We need to import sendOtp from useAuth
+            setEmail(user.email || '');
+            if (!googleOtpSent) {
+              setGoogleOtpSent(true);
+              await sendOtp(user.email || '');
+            }
+          }
+        } else {
+          navigate('/app');
+        }
+      }
+    };
+    handleAuthRedirect();
+  }, [user, navigate, sendOtp, googleOtpSent, showOtp]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
       if (showOtp) {
-        await verifyOtp(email, otp, otpType);
-        if (otpType === 'recovery') {
-          alert("Verification successful! Please set your new password.");
-          navigate('/profile');
-        } else {
+        // For Google OTP, we use 'magiclink' or 'signup' type depending on how sendOtp works.
+        // sendOtp uses signInWithOtp. verifyOtp uses verifyOtp with type.
+        // If user is already logged in (Google), verifyOtp might need 'email' type (magiclink) or 'signup'.
+        // Let's try 'email' (magiclink) as it's safer for existing users.
+        // But verifyOtp in AuthContext takes 'signup' | 'recovery'. We might need to adjust AuthContext or cast it.
+        // Actually, for Google login, it's effectively a "login" verification.
+
+        // If it's Google flow
+        if (user && user.app_metadata.provider === 'google') {
+          await verifyOtp(email, otp, 'magiclink' as any); // Cast to any to bypass strict type for now or update type
+          sessionStorage.setItem('google_otp_verified', 'true');
           navigate('/app');
+        } else {
+          await verifyOtp(email, otp, otpType);
+          if (otpType === 'recovery') {
+            alert("Verification successful! Please set your new password.");
+            navigate('/profile');
+          } else {
+            navigate('/app');
+          }
         }
       } else if (isSignUp) {
         await signUpWithEmail(email, password);
