@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext';
 export const ResetPasswordPage = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
-    const { verifyOtp, updatePassword } = useAuth();
+    const { verifyOtp, updatePassword, signOut } = useAuth();
 
     const [email, setEmail] = useState(searchParams.get('email') || '');
     const [otp, setOtp] = useState('');
@@ -33,6 +33,7 @@ export const ResetPasswordPage = () => {
         setLoading(true);
         try {
             await updatePassword(newPassword);
+            await signOut();
             alert("Password updated successfully! Please login with your new password.");
             navigate('/login');
         } catch (error) {
