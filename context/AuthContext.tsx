@@ -9,7 +9,7 @@ interface AuthContextType {
     signInWithGoogle: () => Promise<void>;
     signInWithEmail: (email: string, password: string) => Promise<void>;
     signUpWithEmail: (email: string, password: string) => Promise<void>;
-    verifyOtp: (email: string, token: string, type: 'signup' | 'recovery') => Promise<void>;
+    verifyOtp: (email: string, token: string, type: 'signup' | 'recovery' | 'magiclink' | 'email') => Promise<void>;
     resetPassword: (email: string) => Promise<void>;
     updatePassword: (password: string) => Promise<void>;
     sendOtp: (email: string) => Promise<void>;
@@ -87,12 +87,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     };
 
-    const verifyOtp = async (email: string, token: string, type: 'signup' | 'recovery') => {
+    const verifyOtp = async (email: string, token: string, type: 'signup' | 'recovery' | 'magiclink' | 'email') => {
         try {
             const { error } = await supabase.auth.verifyOtp({
                 email,
                 token,
-                type,
+                type: type as any,
             });
             if (error) throw error;
         } catch (error: any) {
