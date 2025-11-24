@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { Turnstile } from '@marsidev/react-turnstile';
 
 export const LoginPage = () => {
+  // Version: 1.1 (Force Deploy)
   const navigate = useNavigate();
   const { signInWithGoogle, signInWithEmail, signUpWithEmail, verifyOtp, resetPassword, user } = useAuth();
   const [isSignUp, setIsSignUp] = useState(false);
@@ -176,7 +177,7 @@ export const LoginPage = () => {
           {!showOtp && (
             <div className="flex justify-center my-4">
               <Turnstile
-                siteKey="0x4AAAAAAAEmB7sWn7k5B1_s" // TEST KEY - Replace with your actual Site Key
+                siteKey="0x4AAAAAACCi0-0iY78aOf52" // TEST KEY - Replace with your actual Site Key
                 onSuccess={(token) => setCaptchaToken(token)}
                 options={{ theme: 'light' }}
               />
