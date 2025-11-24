@@ -2,10 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ShieldCheck, LogIn, Mail, Lock, KeyRound } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { Turnstile } from '@marsidev/react-turnstile';
 
 export const LoginPage = () => {
-  // Version: 1.1 (Force Deploy)
   const navigate = useNavigate();
   const { signInWithGoogle, signInWithEmail, signUpWithEmail, verifyOtp, resetPassword, user } = useAuth();
   const [isSignUp, setIsSignUp] = useState(false);
@@ -16,7 +14,6 @@ export const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
-  const [captchaToken, setCaptchaToken] = useState<string | undefined>(undefined);
 
   // Only redirect if user is already logged in ON MOUNT.
   // We handle post-login redirects manually to support different flows (like recovery).
@@ -42,21 +39,11 @@ export const LoginPage = () => {
           navigate('/app');
         }
       } else if (isSignUp) {
-        if (!captchaToken) {
-          alert("Please complete the CAPTCHA check.");
-          setLoading(false);
-          return;
-        }
-        await signUpWithEmail(email, password, captchaToken);
+        await signUpWithEmail(email, password);
         setShowOtp(true);
         setOtpType('signup');
       } else {
-        if (!captchaToken) {
-          alert("Please complete the CAPTCHA check.");
-          setLoading(false);
-          return;
-        }
-        await signInWithEmail(email, password, captchaToken);
+        await signInWithEmail(email, password);
         navigate('/app');
       }
     } catch (error) {
@@ -170,17 +157,6 @@ export const LoginPage = () => {
               <button type="button" onClick={handleForgotPassword} className="text-sm text-blue-600 hover:underline">
                 Forgot Password?
               </button>
-            </div>
-          )}
-
-          {/* Cloudflare Turnstile CAPTCHA */}
-          {!showOtp && (
-            <div className="flex justify-center my-4">
-              <Turnstile
-                siteKey="0x4AAAAAACCi0-0iY78aOf52" // TEST KEY - Replace with your actual Site Key
-                onSuccess={(token) => setCaptchaToken(token)}
-                options={{ theme: 'light' }}
-              />
             </div>
           )}
 

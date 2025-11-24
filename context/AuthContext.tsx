@@ -7,8 +7,8 @@ interface AuthContextType {
     user: User | null;
     loading: boolean;
     signInWithGoogle: () => Promise<void>;
-    signInWithEmail: (email: string, password: string, captchaToken?: string) => Promise<void>;
-    signUpWithEmail: (email: string, password: string, captchaToken?: string) => Promise<void>;
+    signInWithEmail: (email: string, password: string) => Promise<void>;
+    signUpWithEmail: (email: string, password: string) => Promise<void>;
     verifyOtp: (email: string, token: string, type: 'signup' | 'recovery') => Promise<void>;
     resetPassword: (email: string) => Promise<void>;
     updatePassword: (password: string) => Promise<void>;
@@ -57,12 +57,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     };
 
-    const signInWithEmail = async (email: string, password: string, captchaToken?: string) => {
+    const signInWithEmail = async (email: string, password: string) => {
         try {
             const { error } = await supabase.auth.signInWithPassword({
                 email,
                 password,
-                options: { captchaToken }
             });
             if (error) throw error;
         } catch (error: any) {
@@ -72,12 +71,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     };
 
-    const signUpWithEmail = async (email: string, password: string, captchaToken?: string) => {
+    const signUpWithEmail = async (email: string, password: string) => {
         try {
             const { error } = await supabase.auth.signUp({
                 email,
                 password,
-                options: { captchaToken }
+                // options: { emailRedirectTo: ... } // Not needed for OTP
             });
             if (error) throw error;
             alert("Check your email for the OTP code!");
