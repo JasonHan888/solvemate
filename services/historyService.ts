@@ -41,4 +41,16 @@ export const historyService = {
             throw error;
         }
     },
+    async deleteHistoryItems(userId: string, ids: string[]): Promise<void> {
+        const { error } = await supabase
+            .from('history')
+            .delete()
+            .eq('user_id', userId)
+            .in('id', ids);
+
+        if (error) {
+            console.error('Error deleting history items:', error);
+            throw error;
+        }
+    },
 };

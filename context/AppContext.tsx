@@ -18,6 +18,7 @@ interface AppContextType {
   user: any | null;
   profile: UserProfile | null;
   refreshProfile: () => Promise<void>;
+  deleteHistoryItems: (ids: string[]) => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -78,8 +79,24 @@ export const AppProvider: React.FC<PropsWithChildren> = ({ children }) => {
     }
   };
 
+  const deleteHistoryItems = async (ids: string[]) => {
+    // Optimistic update
+    setHistory((prev) => prev.filter(item => !ids.includes(item.id)));
+
+    if (user) {
+      try {
+        await historyService.deleteHistoryItems(user.id, ids);
+      } catch (error) {
+        console.error("Failed to delete history items", error);
+        // Revert on error would be ideal, but for now just log
+        // To revert, we'd need to fetch history again
+        historyService.getHistory(user.id).then(setHistory);
+      }
+    }
+  };
+
   return (
-    <AppContext.Provider value={{ history, addToHistory, currentAnalysis, setCurrentAnalysis, user, profile, refreshProfile }}>
+    <AppContext.Provider value={{ history, addToHistory, currentAnalysis, setCurrentAnalysis, user, profile, refreshProfile, deleteHistoryItems }}>
       {children}
     </AppContext.Provider>
   );
