@@ -42,29 +42,29 @@ export const HistoryPage = () => {
   return (
     <div className="flex-grow w-full bg-slate-50 py-12 px-4">
       <div className="max-w-4xl mx-auto">
-        <div className="flex items-center justify-between mb-8 animate-slide-up">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 animate-slide-up">
           <div className="flex items-center gap-3">
             <div className="bg-blue-100 p-2 rounded-lg text-blue-600">
               <Clock size={24} />
             </div>
-            <h1 className="text-3xl font-bold text-slate-800">History</h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-slate-800">History</h1>
           </div>
 
           {history.length > 0 && (
-            <div className="flex gap-2">
+            <div className="flex gap-2 self-end md:self-auto">
               {isSelectionMode ? (
                 <>
                   <button
                     onClick={handleDeleteSelected}
                     disabled={selectedItems.size === 0}
-                    className="px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    className="px-3 py-2 md:px-4 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-sm md:text-base"
                   >
-                    <Trash2 size={18} />
+                    <Trash2 size={16} className="md:w-[18px] md:h-[18px]" />
                     Delete ({selectedItems.size})
                   </button>
                   <button
                     onClick={toggleSelectionMode}
-                    className="px-4 py-2 bg-slate-200 text-slate-700 font-medium rounded-lg hover:bg-slate-300 transition-colors"
+                    className="px-3 py-2 md:px-4 bg-slate-200 text-slate-700 font-medium rounded-lg hover:bg-slate-300 transition-colors text-sm md:text-base"
                   >
                     Cancel
                   </button>
@@ -72,7 +72,7 @@ export const HistoryPage = () => {
               ) : (
                 <button
                   onClick={toggleSelectionMode}
-                  className="px-4 py-2 bg-white border border-slate-200 text-slate-700 font-medium rounded-lg hover:bg-slate-50 transition-colors shadow-sm"
+                  className="px-3 py-2 md:px-4 bg-white border border-slate-200 text-slate-700 font-medium rounded-lg hover:bg-slate-50 transition-colors shadow-sm text-sm md:text-base"
                 >
                   Select
                 </button>
@@ -118,24 +118,24 @@ export const HistoryPage = () => {
                   </div>
                 )}
 
-                <div className="w-24 h-24 shrink-0 rounded-lg overflow-hidden bg-slate-100 border border-slate-100">
+                <div className="w-20 h-20 md:w-24 md:h-24 shrink-0 rounded-lg overflow-hidden bg-slate-100 border border-slate-100">
                   <img src={item.imageUrl} alt="Thumbnail" className="w-full h-full object-cover" />
                 </div>
 
-                <div className="flex-grow min-w-0 py-1 pr-8">
-                  <div className="flex justify-between items-start mb-1">
-                    <h3 className="font-bold text-slate-800 truncate pr-4 text-lg">
+                <div className="flex-grow min-w-0 py-1 pr-0 md:pr-8">
+                  <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-1 gap-1">
+                    <h3 className="font-bold text-slate-800 truncate pr-4 text-base md:text-lg">
                       {item.result.likelyCause}
                     </h3>
-                    <span className="text-xs font-medium text-slate-400 shrink-0 bg-slate-50 px-2 py-1 rounded-full border border-slate-100">
+                    <span className="text-xs font-medium text-slate-400 shrink-0 bg-slate-50 px-2 py-1 rounded-full border border-slate-100 w-fit">
                       {new Date(item.timestamp).toLocaleDateString()}
                     </span>
                   </div>
-                  <p className="text-slate-500 text-sm line-clamp-2 mb-3">
+                  <p className="text-slate-500 text-xs md:text-sm line-clamp-2 mb-2 md:mb-3">
                     {item.result.summary}
                   </p>
                   {!isSelectionMode && (
-                    <div className="flex items-center text-blue-600 text-sm font-semibold group-hover:underline">
+                    <div className="flex items-center text-blue-600 text-xs md:text-sm font-semibold group-hover:underline">
                       View Solution <ArrowRight size={14} className="ml-1" />
                     </div>
                   )}

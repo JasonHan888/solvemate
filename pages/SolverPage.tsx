@@ -283,7 +283,7 @@ export const SolverPage = () => {
         </div>
       )}
 
-      <div className="w-full max-w-3xl mx-auto px-4 py-10 animate-slide-up">
+      <div className="w-full max-w-3xl mx-auto px-4 py-6 md:py-10 animate-slide-up">
         <div className="mb-8 text-center">
           <h2 className="text-2xl font-bold text-slate-800">New Analysis</h2>
           <p className="text-slate-500">Upload an image to identify the problem.</p>
@@ -315,7 +315,7 @@ export const SolverPage = () => {
             <div
               onClick={triggerFileUpload}
               className={`
-                group relative border-2 border-dashed rounded-xl p-8 md:p-12 text-center cursor-pointer transition-all duration-300
+                group relative border-2 border-dashed rounded-xl p-6 md:p-12 text-center cursor-pointer transition-all duration-300
                 ${selectedImage ? 'border-blue-300 bg-blue-50/30' : 'border-slate-300 hover:border-blue-400 hover:bg-slate-50'}
               `}
             >

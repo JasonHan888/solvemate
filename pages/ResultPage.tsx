@@ -6,7 +6,7 @@ import { CheckCircle2, AlertTriangle, Search, ArrowRight, RotateCcw, AlertOctago
 export const ResultPage = () => {
   const { currentAnalysis } = useApp();
   const navigate = useNavigate();
-  
+
   // TTS State
   const [isPlaying, setIsPlaying] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
@@ -31,13 +31,13 @@ export const ResultPage = () => {
       const jsonString = JSON.stringify(currentAnalysis, null, 2);
       const blob = new Blob([jsonString], { type: "application/json" });
       const url = URL.createObjectURL(blob);
-      
+
       const link = document.createElement('a');
       link.href = url;
       link.download = `solvemate-analysis-${new Date().toISOString().slice(0, 10)}.json`;
       document.body.appendChild(link);
       link.click();
-      
+
       // Cleanup
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
@@ -58,7 +58,7 @@ export const ResultPage = () => {
         Solution Steps: ${result.solutionSteps.join('. ')}. 
         ${result.warnings.length > 0 ? `Warnings: ${result.warnings.join('. ')}` : ''}
       `;
-      
+
       const utterance = new SpeechSynthesisUtterance(textToRead);
       utterance.onend = () => setIsPlaying(false);
       utterance.rate = 1.0;
@@ -68,16 +68,16 @@ export const ResultPage = () => {
   };
 
   const handleCopy = () => {
-    const text = `PROBLEM: ${result.summary}\n\nCAUSE: ${result.likelyCause}\n\nSOLUTION STEPS:\n${result.solutionSteps.map((s, i) => `${i+1}. ${s}`).join('\n')}\n\nWARNINGS:\n${result.warnings.join('\n')}`;
+    const text = `PROBLEM: ${result.summary}\n\nCAUSE: ${result.likelyCause}\n\nSOLUTION STEPS:\n${result.solutionSteps.map((s, i) => `${i + 1}. ${s}`).join('\n')}\n\nWARNINGS:\n${result.warnings.join('\n')}`;
     navigator.clipboard.writeText(text);
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2000);
   };
 
   return (
-    <div className="flex-grow w-full bg-slate-50 py-8 px-4 sm:px-6">
+    <div className="flex-grow w-full bg-slate-50 py-6 px-4 sm:px-6 md:py-8">
       <div className="max-w-6xl mx-auto grid lg:grid-cols-12 gap-8">
-        
+
         {/* Left Column: Input Context */}
         <div className="lg:col-span-5 space-y-6 animate-slide-up">
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden sticky top-24">
@@ -86,10 +86,10 @@ export const ResultPage = () => {
             </div>
             <div className="p-4">
               <div className="bg-slate-100 rounded-lg overflow-hidden border border-slate-200 mb-4">
-                <img 
-                  src={imageUrl} 
-                  alt="Problem" 
-                  className="w-full h-auto object-cover max-h-[400px]" 
+                <img
+                  src={imageUrl}
+                  alt="Problem"
+                  className="w-full h-auto object-cover max-h-[300px] md:max-h-[400px]"
                 />
               </div>
               {userDescription && (
@@ -98,15 +98,15 @@ export const ResultPage = () => {
                   <p className="text-slate-700 text-sm italic">"{userDescription}"</p>
                 </div>
               )}
-              
+
               <div className="flex flex-col gap-3 mt-6">
-                <button 
+                <button
                   onClick={() => navigate('/app')}
                   className="w-full py-2.5 px-4 bg-white border-2 border-slate-200 text-slate-600 font-semibold rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-colors flex items-center justify-center gap-2"
                 >
                   <RotateCcw size={18} /> Ask Another Question
                 </button>
-                <button 
+                <button
                   onClick={handleDownload}
                   className="w-full py-2.5 px-4 bg-white border-2 border-slate-200 text-slate-600 font-semibold rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-colors flex items-center justify-center gap-2"
                   title="Save analysis result as JSON"
@@ -121,28 +121,28 @@ export const ResultPage = () => {
 
         {/* Right Column: Analysis Results */}
         <div className="lg:col-span-7 space-y-6">
-          
+
           {/* Summary Card */}
           <div className="bg-white rounded-2xl shadow-md border-l-4 border-blue-500 overflow-hidden animate-slide-up delay-100">
             <div className="p-6">
               <div className="flex justify-between items-start mb-2">
-                 <h2 className="text-xl font-bold text-slate-800">Problem Summary</h2>
-                 <div className="flex gap-2">
-                    <button 
-                      onClick={toggleSpeech}
-                      className={`p-2 rounded-full transition-colors ${isPlaying ? 'bg-blue-100 text-blue-600' : 'text-slate-400 hover:text-blue-600 hover:bg-slate-50'}`}
-                      title={isPlaying ? "Stop Reading" : "Read Aloud"}
-                    >
-                      {isPlaying ? <Square size={20} fill="currentColor" /> : <Volume2 size={20} />}
-                    </button>
-                    <button 
-                      onClick={handleCopy}
-                      className="p-2 rounded-full text-slate-400 hover:text-blue-600 hover:bg-slate-50 transition-colors"
-                      title="Copy Solution to Clipboard"
-                    >
-                      {isCopied ? <Check size={20} className="text-green-500" /> : <Copy size={20} />}
-                    </button>
-                 </div>
+                <h2 className="text-xl font-bold text-slate-800">Problem Summary</h2>
+                <div className="flex gap-2">
+                  <button
+                    onClick={toggleSpeech}
+                    className={`p-2 rounded-full transition-colors ${isPlaying ? 'bg-blue-100 text-blue-600' : 'text-slate-400 hover:text-blue-600 hover:bg-slate-50'}`}
+                    title={isPlaying ? "Stop Reading" : "Read Aloud"}
+                  >
+                    {isPlaying ? <Square size={20} fill="currentColor" /> : <Volume2 size={20} />}
+                  </button>
+                  <button
+                    onClick={handleCopy}
+                    className="p-2 rounded-full text-slate-400 hover:text-blue-600 hover:bg-slate-50 transition-colors"
+                    title="Copy Solution to Clipboard"
+                  >
+                    {isCopied ? <Check size={20} className="text-green-500" /> : <Copy size={20} />}
+                  </button>
+                </div>
               </div>
               <p className="text-slate-600 leading-relaxed">{result.summary}</p>
             </div>
@@ -163,22 +163,22 @@ export const ResultPage = () => {
 
           {/* Solution Steps */}
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden animate-slide-up delay-300">
-             <div className="px-6 py-4 border-b border-slate-100 bg-green-50/50 flex items-center gap-2">
-                <CheckCircle2 className="text-green-600" size={20} />
-                <h3 className="font-bold text-slate-800">Recommended Solution</h3>
-             </div>
-             <div className="p-6">
-               <ol className="space-y-4">
-                 {result.solutionSteps.map((step, idx) => (
-                   <li key={idx} className="flex gap-4">
-                     <span className="flex-shrink-0 w-8 h-8 rounded-full bg-green-100 text-green-700 font-bold flex items-center justify-center text-sm">
-                       {idx + 1}
-                     </span>
-                     <p className="text-slate-700 mt-1">{step}</p>
-                   </li>
-                 ))}
-               </ol>
-             </div>
+            <div className="px-6 py-4 border-b border-slate-100 bg-green-50/50 flex items-center gap-2">
+              <CheckCircle2 className="text-green-600" size={20} />
+              <h3 className="font-bold text-slate-800">Recommended Solution</h3>
+            </div>
+            <div className="p-6">
+              <ol className="space-y-4">
+                {result.solutionSteps.map((step, idx) => (
+                  <li key={idx} className="flex gap-4">
+                    <span className="flex-shrink-0 w-8 h-8 rounded-full bg-green-100 text-green-700 font-bold flex items-center justify-center text-sm">
+                      {idx + 1}
+                    </span>
+                    <p className="text-slate-700 mt-1">{step}</p>
+                  </li>
+                ))}
+              </ol>
+            </div>
           </div>
 
           {/* Warnings */}
@@ -221,8 +221,8 @@ export const ResultPage = () => {
               <h3 className="font-bold text-slate-800 mb-3">Google Searches</h3>
               <div className="flex flex-col gap-2">
                 {result.searchQueries.map((query, idx) => (
-                  <a 
-                    key={idx} 
+                  <a
+                    key={idx}
                     href={`https://www.google.com/search?q=${encodeURIComponent(query)}`}
                     target="_blank"
                     rel="noopener noreferrer"
