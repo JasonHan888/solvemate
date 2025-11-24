@@ -51,7 +51,7 @@ export const HistoryPage = () => {
           </div>
 
           {history.length > 0 && (
-            <div className="flex gap-2 self-end md:self-auto">
+            <div className="flex gap-2 self-end md:self-auto flex-wrap justify-end">
               {isSelectionMode ? (
                 <>
                   <button
@@ -61,6 +61,18 @@ export const HistoryPage = () => {
                   >
                     <Trash2 size={16} className="md:w-[18px] md:h-[18px]" />
                     Delete ({selectedItems.size})
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (selectedItems.size === history.length) {
+                        setSelectedItems(new Set());
+                      } else {
+                        setSelectedItems(new Set(history.map(item => item.id)));
+                      }
+                    }}
+                    className="px-3 py-2 md:px-4 bg-blue-50 text-blue-600 font-medium rounded-lg hover:bg-blue-100 transition-colors text-sm md:text-base"
+                  >
+                    {selectedItems.size === history.length ? 'Deselect All' : 'Select All'}
                   </button>
                   <button
                     onClick={toggleSelectionMode}
