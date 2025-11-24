@@ -28,6 +28,12 @@ export const ProfilePage = () => {
         setLoading(true);
         setMessage(null);
 
+        if (!username || username.length < 3) {
+            setMessage({ type: 'error', text: 'Username must be at least 3 characters long.' });
+            setLoading(false);
+            return;
+        }
+
         try {
             const { error } = await supabase
                 .from('profiles')
